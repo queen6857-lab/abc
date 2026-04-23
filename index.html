@@ -39,41 +39,34 @@
         .page { display: none; width: 95%; max-width: 900px; margin-top: 20px; text-align: center; padding-bottom: 50px; }
         .active { display: block; }
 
-        /* 입력 카드 */
+        /* 공통 카드 스타일 */
         .input-card { background: white; padding: 20px; border-radius: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
         select, textarea, input { padding: 10px; margin: 5px; border-radius: 12px; border: 2px solid #eee; font-family: 'Gaegu'; font-size: 1.2rem; }
         .btn-submit { background-color: var(--point-pink); color: white; border: none; padding: 10px 30px; border-radius: 20px; font-size: 1.5rem; cursor: pointer; font-family: 'Gaegu'; }
 
         /* 대시보드 그리드 */
         .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 15px; margin-top: 20px; }
-        
-        .stu-card { 
-            background: #fff; padding: 15px 5px; border-radius: 20px; 
-            border: 3px solid #eee; display: flex; flex-direction: column; align-items: center; 
-            transition: 0.3s; position: relative;
-        }
+        .stu-card { background: #fff; padding: 15px 5px; border-radius: 20px; border: 3px solid #eee; display: flex; flex-direction: column; align-items: center; transition: 0.3s; position: relative; }
         .stu-card.done { border-color: #ffccbc; background-color: #fff9f8; cursor: pointer; }
-        
         .stu-num { font-size: 1.2rem; font-weight: bold; margin-bottom: 5px; }
         .stu-status { font-size: 0.9rem; padding: 3px 10px; border-radius: 10px; background: #eee; color: #999; }
         .done .stu-status { background: #ff8a80; color: white; }
 
-        /* [추가] 카드 내 개별 다운로드 버튼 */
-        .btn-mini-dl {
-            margin-top: 8px; background: var(--btn-blue); color: white; 
-            border: none; padding: 4px 10px; border-radius: 10px; 
-            font-family: 'Gaegu'; font-size: 0.9rem; cursor: pointer;
-        }
-        .btn-mini-dl:hover { background: #0288d1; }
+        .btn-mini-dl { margin-top: 8px; background: var(--btn-blue); color: white; border: none; padding: 4px 10px; border-radius: 10px; font-family: 'Gaegu'; font-size: 0.9rem; cursor: pointer; }
 
-        /* 관리자 전용 버튼 */
+        /* 일기 피드 스타일 */
+        .diary-card { background: white; padding: 20px; border-radius: 20px; margin-bottom: 15px; border-left: 8px solid var(--point-pink); text-align: left; position: relative; }
+        .private-card { border-left-color: var(--admin-color); background-color: #f0f4ff; }
+
+        /* 관리자 버튼 */
         .admin-only-btn { display: none; background-color: var(--admin-color); color: white; border: none; padding: 10px 20px; border-radius: 15px; font-size: 1.1rem; cursor: pointer; font-family: 'Gaegu'; margin: 5px; }
 
         /* 이미지 모달 */
         #img-modal { display: none; position: fixed; z-index: 2000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); flex-direction: column; justify-content: center; align-items: center; }
         #img-modal img { max-width: 80%; max-height: 70%; border: 5px solid white; border-radius: 10px; }
 
-        .back-home { margin-top: 40px; background-color: var(--spring-green); color: white; border: none; padding: 15px 50px; border-radius: 30px; cursor: pointer; font-family: 'Gaegu'; font-size: 1.7rem; font-weight: bold; }
+        .back-home { margin-top: 40px; background-color: var(--spring-green); color: white; border: none; padding: 15px 50px; border-radius: 30px; cursor: pointer; font-family: 'Gaegu'; font-size: 1.7rem; font-weight: bold; transition: 0.3s; }
+        .back-home:hover { transform: scale(1.05); background-color: #66bb6a; }
         .admin-lock { position: fixed; bottom: 20px; right: 20px; background: rgba(255,255,255,0.4); border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; font-size: 1.2rem; }
     </style>
 </head>
@@ -84,15 +77,33 @@
     <h1>2026 한우반 과제방</h1>
 </header>
 
-<div id="page-home" class="page active" style="text-align: center;">
+<div id="page-home" class="page active">
     <div style="display: flex; justify-content: center; align-items: center; gap: 50px; flex-wrap: wrap;">
         <div style="display: flex; flex-direction: column; gap: 15px; width: 320px;">
-            <button class="nav-btn btn-diary" style="padding:18px; font-size:1.5rem; border-radius:20px; border:none; background:#fff9c4; font-family:'Gaegu'; font-weight:bold; cursor:pointer;" onclick="showPage('diary')">📝 두줄일기 쓰기</button>
-            <button class="nav-btn btn-learn" style="padding:18px; font-size:1.5rem; border-radius:20px; border:none; background:#e1f5fe; font-family:'Gaegu'; font-weight:bold; cursor:pointer;" onclick="showPage('learning')">📖 배움공책 제출</button>
-            <button class="nav-btn btn-think" style="padding:18px; font-size:1.5rem; border-radius:20px; border:none; background:#f3e5f5; font-family:'Gaegu'; font-weight:bold; cursor:pointer;" onclick="showPage('thinking')">💡 생각공책 제출</button>
+            <button class="nav-btn" style="padding:18px; font-size:1.5rem; border-radius:20px; border:none; background:#fff9c4; font-family:'Gaegu'; font-weight:bold; cursor:pointer;" onclick="showPage('diary')">📝 두줄일기 쓰기</button>
+            <button class="nav-btn" style="padding:18px; font-size:1.5rem; border-radius:20px; border:none; background:#e1f5fe; font-family:'Gaegu'; font-weight:bold; cursor:pointer;" onclick="showPage('learning')">📖 배움공책 제출</button>
+            <button class="nav-btn" style="padding:18px; font-size:1.5rem; border-radius:20px; border:none; background:#f3e5f5; font-family:'Gaegu'; font-weight:bold; cursor:pointer;" onclick="showPage('thinking')">💡 생각공책 제출</button>
         </div>
         <img src="2026 한우반(배경제거).png" alt="한우" style="width: 350px; height: auto;">
     </div>
+</div>
+
+<div id="page-diary" class="page">
+    <h2>📝 오늘의 두줄일기</h2>
+    <div class="admin-area">
+        <button class="admin-only-btn" onclick="clearData('diary')">🗑️ 일기 전체 리셋</button>
+    </div>
+    <div class="input-card">
+        <select id="diary-stu" style="width:120px;"><option value="">번호 선택</option></select>
+        <textarea id="diary-text" rows="2" placeholder="오늘 하루를 두 줄로 남겨주세요!" style="width: 100%;"></textarea>
+        <div style="margin: 10px 0;">
+            <label><input type="radio" name="scope" value="public" checked> 전체공유</label>
+            <label><input type="radio" name="scope" value="private"> 선생님만</label>
+        </div>
+        <button class="btn-submit" onclick="submitDiary()">일기 제출 🌸</button>
+    </div>
+    <div id="diary-feed" style="text-align: left;"><h3>🌱 우리반 일기 게시판</h3></div>
+    <button class="back-home" onclick="showPage('home')">🏠 메인 화면으로</button>
 </div>
 
 <div id="page-notebook" class="page">
@@ -112,40 +123,28 @@
 
 <div id="img-modal" onclick="closeModal()">
     <img id="modal-img" src="">
-    <div style="margin-top: 20px; color: white;">화면 아무 곳이나 누르면 닫힙니다.</div>
 </div>
 
 <button class="admin-lock" onclick="toggleAdmin()">🔒</button>
 
 <script>
     const students = [...Array(11).keys()].map(i => i + 1).concat([...Array(14).keys()].map(i => i + 31));
-    const STORAGE_KEY = 'hanwoo_v2026_final';
+    const STORAGE_KEY = 'hanwoo_v2026_final_fix';
     let appData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || { diary: [], learning: {}, thinking: {} };
     let currentMode = '';
     let isAdmin = false;
 
-    function toggleAdmin() {
-        if (!isAdmin) {
-            if (prompt("선생님 비밀번호를 입력하세요.") === "1234") {
-                isAdmin = true;
-                alert("선생님 모드 활성화!");
-                document.getElementById('admin-badge').style.display = 'block';
-                document.querySelectorAll('.admin-only-btn').forEach(b => b.style.display = 'inline-block');
-            }
-        } else {
-            isAdmin = false;
-            document.getElementById('admin-badge').style.display = 'none';
-            document.querySelectorAll('.admin-only-btn').forEach(b => b.style.display = 'none');
-            alert("선생님 모드 종료.");
-        }
-        if (currentMode) renderDashboard();
-    }
-
+    // 페이지 전환 로직 수정 (핵심!)
     function showPage(pageId) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        
         if (pageId === 'home') {
             document.getElementById('page-home').classList.add('active');
             currentMode = '';
+        } else if (pageId === 'diary') {
+            document.getElementById('page-diary').classList.add('active');
+            currentMode = 'diary';
+            renderDiary();
         } else {
             document.getElementById('page-notebook').classList.add('active');
             currentMode = pageId;
@@ -156,22 +155,68 @@
     }
 
     function initSelect() {
-        const sel = document.getElementById('nb-stu');
-        if (sel.options.length <= 1) {
-            students.forEach(s => sel.innerHTML += `<option value="${s}">${s}번</option>`);
-        }
+        const dSel = document.getElementById('diary-stu');
+        const nSel = document.getElementById('nb-stu');
+        [dSel, nSel].forEach(sel => {
+            if (sel.options.length <= 1) {
+                students.forEach(s => sel.innerHTML += `<option value="${s}">${s}번</option>`);
+            }
+        });
     }
 
+    function toggleAdmin() {
+        if (!isAdmin) {
+            if (prompt("선생님 비밀번호") === "1234") {
+                isAdmin = true;
+                document.getElementById('admin-badge').style.display = 'block';
+                document.querySelectorAll('.admin-only-btn').forEach(b => b.style.display = 'inline-block');
+            }
+        } else {
+            isAdmin = false;
+            document.getElementById('admin-badge').style.display = 'none';
+            document.querySelectorAll('.admin-only-btn').forEach(b => b.style.display = 'none');
+        }
+        if (currentMode === 'diary') renderDiary();
+        else if (currentMode) renderDashboard();
+    }
+
+    // 일기 관련
+    function submitDiary() {
+        const id = document.getElementById('diary-stu').value;
+        const text = document.getElementById('diary-text').value;
+        const scope = document.querySelector('input[name="scope"]:checked').value;
+        if (!id || !text) return alert("번호와 내용을 써주세요!");
+        appData.diary.push({ id, text, scope, date: new Date().toLocaleString() });
+        save();
+        alert("일기 제출 완료! 🐮");
+        document.getElementById('diary-text').value = '';
+        renderDiary();
+    }
+
+    function renderDiary() {
+        const feed = document.getElementById('diary-feed');
+        feed.innerHTML = '<h3>🌱 우리반 일기 게시판</h3>';
+        [...appData.diary].reverse().forEach(d => {
+            if (d.scope === 'public' || isAdmin) {
+                const card = document.createElement('div');
+                card.className = `diary-card ${d.scope === 'private' ? 'private-card' : ''}`;
+                card.innerHTML = `${d.scope === 'private' ? '<div style="color:var(--admin-color); font-weight:bold;">🔒 비밀글 (선생님만 보임)</div>' : ''}
+                                  <strong>${d.id}번 친구:</strong> <p>${d.text}</p>`;
+                feed.appendChild(card);
+            }
+        });
+    }
+
+    // 공책 관련
     function submitNotebook() {
         const id = document.getElementById('nb-stu').value;
         const file = document.getElementById('nb-file').files[0];
         if (!id || !file) return alert("번호와 파일을 선택해주세요!");
-
         const reader = new FileReader();
         reader.onload = (e) => {
             appData[currentMode][id] = e.target.result;
             save();
-            alert(id + "번 제출 완료!");
+            alert("제출 완료!");
             renderDashboard();
         };
         reader.readAsDataURL(file);
@@ -185,57 +230,38 @@
             const isDone = !!imgData;
             const card = document.createElement('div');
             card.className = `stu-card ${isDone ? 'done' : ''}`;
-            
-            let html = `<div class="stu-num">${s}번</div>
-                        <div class="stu-status">${isDone ? '제출완료' : '미제출'}</div>`;
-            
-            // [핵심] 선생님 모드 + 제출완료 시 저장 버튼 추가
+            let html = `<div class="stu-num">${s}번</div><div class="stu-status">${isDone ? '제출완료' : '미제출'}</div>`;
             if (isDone && isAdmin) {
-                html += `<button class="btn-mini-dl" onclick="event.stopPropagation(); downloadSingle('${s}', '${imgData}')">💾 저장</button>`;
-                card.onclick = () => openModal(imgData);
+                html += `<button class="btn-mini-dl" onclick="event.stopPropagation(); saveAs('${imgData}', '${s}번_${currentMode}.png')">💾 저장</button>`;
+                card.onclick = () => { document.getElementById('img-modal').style.display = 'flex'; document.getElementById('modal-img').src = imgData; };
             }
-            
             card.innerHTML = html;
             dashboard.appendChild(card);
         });
     }
 
-    // 개별 저장 함수
-    function downloadSingle(id, data) {
-        saveAs(data, `${id}번_${currentMode}.png`);
-    }
-
-    function openModal(src) {
-        document.getElementById('img-modal').style.display = 'flex';
-        document.getElementById('modal-img').src = src;
-    }
     function closeModal() { document.getElementById('img-modal').style.display = 'none'; }
 
     async function downloadAllZip() {
         const zip = new JSZip();
-        const data = appData[currentMode];
         let hasData = false;
-        for (let id in data) {
-            const base64 = data[id].split(',')[1];
-            zip.file(`${id}번_${currentMode}.png`, base64, {base64: true});
+        for (let id in appData[currentMode]) {
+            zip.file(`${id}번_${currentMode}.png`, appData[currentMode][id].split(',')[1], {base64: true});
             hasData = true;
         }
-        if (!hasData) return alert("제출된 과제가 없습니다.");
+        if (!hasData) return alert("제출된 과제가 없어요.");
         zip.generateAsync({type:"blob"}).then(c => saveAs(c, `${currentMode}_일괄다운로드.zip`));
     }
 
-    function clearData() {
-        if (confirm("현황을 리셋하시겠습니까? (복구 불가)")) {
-            appData[currentMode] = {};
-            save(); renderDashboard();
+    function clearData(mode) {
+        if (confirm("정말 리셋할까요?")) {
+            if(mode === 'diary') appData.diary = [];
+            else appData[currentMode] = {};
+            save(); location.reload();
         }
     }
 
-    function save() {
-        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(appData)); }
-        catch(e) { alert("저장 공간이 부족합니다! 리셋이 필요합니다."); }
-    }
-
+    function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(appData)); }
     showPage('home');
 </script>
 </body>
