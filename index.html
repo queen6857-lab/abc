@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 한우반 과제방</title>
+    <style>
+        /* 폰트 설정 */
+        @import url('https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&display=swap');
+
+        :root {
+            --spring-pink: #fff0f5;
+            --text-brown: #5d4037;
+            --point-pink: #ff99aa;
+            --btn-yellow: #fff9c4;
+            --btn-blue: #e1f5fe;
+            --btn-purple: #f3e5f5;
+            --spring-green: #81c784;
+            --card-border: #ffccbc;
+        }
+
+        body {
+            font-family: 'Gaegu', cursive;
+            background-color: var(--spring-pink);
+            color: var(--text-brown);
+            margin: 0; padding: 0;
+            display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh;
+        }
+
+        header { padding: 30px 20px; text-align: center; }
+        h1 { font-size: 3.5rem; color: var(--point-pink); margin: 0; text-shadow: 2px 2px white; }
+
+        /* [메인 홈] */
+        .main-container {
+            display: flex; justify-content: center; align-items: center;
+            gap: 50px; width: 90%; max-width: 1000px; flex-wrap: wrap;
+        }
+        .button-group { display: flex; flex-direction: column; gap: 15px; width: 320px; }
+        .nav-btn {
+            padding: 18px; font-size: 1.5rem; border: none; border-radius: 20px;
+            cursor: pointer; transition: 0.3s; font-family: 'Gaegu'; font-weight: bold;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+        }
+        .nav-btn:hover { transform: scale(1.05); }
+        .btn-diary { background-color: var(--btn-yellow); border: 3px solid #fbc02d; }
+        .btn-learn { background-color: var(--btn-blue); border: 3px solid #03a9f4; }
+        .btn-think { background-color: var(--btn-purple); border: 3px solid #9c27b0; }
+
+        .char-box img { width: 350px; height: auto; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.1)); }
+
+        /* [페이지 공통] */
+        .page { display: none; width: 95%; max-width: 900px; margin-top: 20px; text-align: center; padding-bottom: 50px; }
+        .active { display: block; }
+
+        /* [입력 영역] */
+        .input-card { background: white; padding: 20px; border-radius: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        select, textarea, input { padding: 12px; margin: 8px 0; border-radius: 15px; border: 2px solid #eee; font-family: 'Gaegu'; font-size: 1.2rem; box-sizing: border-box; }
+        .btn-submit { background-color: var(--point-pink); color: white; border: none; padding: 12px 40px; border-radius: 20px; font-size: 1.5rem; cursor: pointer; font-family: 'Gaegu'; }
+
+        /* [대시보드 현황판 - 참고 이미지 스타일] */
+        .status-summary { font-size: 1.5rem; margin-bottom: 15px; font-weight: bold; color: var(--text-brown); }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 15px; margin-top: 20px;
+        }
+        .stu-card {
+            background: #fff;
+            padding: 20px 10px;
+            border-radius: 15px;
+            border: 3px solid #eee;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        /* 제출 완료 시 스타일 (참고 이미지의 따뜻한 오렌지/핑크 톤 반영) */
+        .stu-card.done {
+            border-color: #ffccbc;
+            background-color: #fff9f8;
+            box-shadow: 0 4px 8px rgba(255, 171, 145, 0.2);
+        }
+        .stu-num { font-size: 1.3rem; font-weight: bold; margin-bottom: 8px; }
+        .stu-status { 
+            font-size: 1rem; padding: 4px 12px; border-radius: 10px; 
+            background: #f5f5f5; color: #999;
+        }
+        .done .stu-status {
+            background: #ff8a80; color: white; /* 제출 시 버튼처럼 강조 */
+        }
+
+        /* [일기 게시판] */
+        .diary-card { background: white; padding: 20px; border-radius: 20px; margin-bottom: 20px; border-left: 8px solid var(--point-pink); text-align: left; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+
+        /* [메인으로 버튼] */
+        .back-home {
+            margin-top: 40px; background-color: var(--spring-green); color: white;
+            border: none; padding: 15px 50px; border-radius: 30px; cursor: pointer;
+            font-family: 'Gaegu'; font-size: 1.7rem; font-weight: bold;
+            box-shadow: 0 6px 12px rgba(129, 199, 132, 0.3); transition: 0.3s;
+        }
+        .back-home:hover { transform: scale(1.1); background-color: #66bb6a; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>2026 한우반 과제방</h1>
+</header>
+
+<div id="page-home" class="page active">
+    <div class="main-container">
+        <div class="button-group">
+            <button class="nav-btn btn-diary" onclick="showPage('diary')">📝 두줄일기 쓰기</button>
+            <button class="nav-btn btn-learn" onclick="showPage('learning')">📖 배움공책 제출</button>
+            <button class="nav-btn btn-think" onclick="showPage('thinking')">💡 생각공책 제출</button>
+        </div>
+        <div class="char-box">
+            <img src="2026 한우반(배경제거).png" alt="한우 캐릭터">
+        </div>
+    </div>
+</div>
+
+<div id="page-diary" class="page">
+    <h2>📝 오늘의 두줄일기</h2>
+    <div class="input-card">
+        <select id="diary-stu" style="width:150px;"><option value="">번호 선택</option></select>
+        <textarea id="diary-text" rows="2" placeholder="오늘 하루는 어땠나요?"></textarea>
+        <div style="margin: 10px 0;">
+            <label><input type="radio" name="scope" value="public" checked> 우리반 공유</label>
+            <label><input type="radio" name="scope" value="private"> 선생님만</label>
+        </div>
+        <button class="btn-submit" onclick="submitDiary()">일기 제출 🌸</button>
+    </div>
+    <div id="diary-feed"><h3>🌱 우리반 일기 게시판</h3></div>
+    <button class="back-home" onclick="showPage('home')">🏠 메인 화면으로</button>
+</div>
+
+<div id="page-notebook" class="page">
+    <h2 id="nb-title">공책 제출</h2>
+    <div class="input-card">
+        <select id="nb-stu" style="width:150px;"><option value="">번호 선택</option></select>
+        <input type="file" id="nb-file" accept="image/*" capture="camera" style="width:250px;">
+        <button class="btn-submit" onclick="submitNotebook()">사진 제출하기 📸</button>
+    </div>
+
+    <div class="status-summary">
+        현재 제출 현황: <span id="submit-count" style="color:#ff8a80;">0</span> / 25 명
+    </div>
+    
+    <div id="dashboard" class="dashboard-grid"></div>
+
+    <button class="back-home" onclick="showPage('home')">🏠 메인 화면으로</button>
+</div>
+
+<script>
+    const students = [...Array(11).keys()].map(i => i + 1).concat([...Array(14).keys()].map(i => i + 31));
+    const STORAGE_KEY = 'hanwoo_final_v3';
+    let appData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || { diary: [], learning: {}, thinking: {} };
+    let currentMode = '';
+
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        const targetId = (pageId === 'learning' || pageId === 'thinking') ? 'notebook' : pageId;
+        document.getElementById(`page-${targetId}`).classList.add('active');
+        
+        if(pageId === 'diary') renderDiary();
+        if(pageId === 'learning' || pageId === 'thinking') {
+            currentMode = pageId;
+            document.getElementById('nb-title').innerText = pageId === 'learning' ? '📖 배움공책 제출' : '💡 생각공책 제출';
+            renderDashboard();
+        }
+        initSelects();
+    }
+
+    function initSelects() {
+        const selects = [document.getElementById('diary-stu'), document.getElementById('nb-stu')];
+        selects.forEach(sel => {
+            if(sel.options.length <= 1) {
+                students.forEach(s => sel.innerHTML += `<option value="${s}">${s}번</option>`);
+            }
+        });
+    }
+
+    // 일기 제출
+    function submitDiary() {
+        const id = document.getElementById('diary-stu').value;
+        const text = document.getElementById('diary-text').value;
+        const scope = document.querySelector('input[name="scope"]:checked').value;
+        if(!id || !text) return alert("번호와 일기 내용을 확인해줘!");
+        appData.diary.push({ id, text, scope, comments: [] });
+        save();
+        alert(id + "번 일기 완료! 🐮");
+        document.getElementById('diary-text').value = '';
+        renderDiary();
+    }
+
+    function renderDiary() {
+        const feed = document.getElementById('diary-feed');
+        feed.innerHTML = '<h3>🌱 우리반 일기 게시판</h3>';
+        appData.diary.slice().reverse().forEach((d, idx) => {
+            if(d.scope === 'public') {
+                const card = document.createElement('div');
+                card.className = 'diary-card';
+                card.innerHTML = `<strong>${d.id}번 친구:</strong><p>${d.text}</p>`;
+                feed.appendChild(card);
+            }
+        });
+    }
+
+    // 공책 제출 및 자동 체크 대시보드
+    function submitNotebook() {
+        const id = document.getElementById('nb-stu').value;
+        const file = document.getElementById('nb-file').files[0];
+        if(!id || !file) return alert("번호와 사진을 확인해줘!");
+        
+        // 제출 데이터 저장
+        appData[currentMode][id] = "DONE";
+        save();
+        alert(id + "번 공책 제출 완료! 👍");
+        renderDashboard(); // 제출 즉시 대시보드 업데이트
+    }
+
+    function renderDashboard() {
+        const dashboard = document.getElementById('dashboard');
+        const countSpan = document.getElementById('submit-count');
+        dashboard.innerHTML = '';
+        let count = 0;
+
+        students.forEach(s => {
+            const isDone = appData[currentMode][s] === "DONE";
+            if(isDone) count++;
+
+            const card = document.createElement('div');
+            card.className = `stu-card ${isDone ? 'done' : ''}`;
+            card.innerHTML = `
+                <div class="stu-num">${s}번</div>
+                <div class="stu-status">${isDone ? '제출 완료 ✅' : '미제출 ⏳'}</div>
+            `;
+            dashboard.appendChild(card);
+        });
+        countSpan.innerText = count;
+    }
+
+    function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(appData)); }
+    showPage('home');
+</script>
+</body>
+</html>
